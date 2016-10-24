@@ -679,9 +679,6 @@ interactInertConcatSymbol _ _ _ _ = []
 
 
 
-
-
-
 {- -----------------------------------------------------------------------------
 These inverse functions are used for simplifying propositions using
 concrete natural numbers.
