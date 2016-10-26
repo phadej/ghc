@@ -94,3 +94,9 @@ ti8 _ _ = ()
 
 ti9 :: Proxy (y - x) -> Proxy x -> ()
 ti9 _ _ = ()
+
+tti1 :: Proxy (AppendSymbol y x) -> Proxy x -> ()
+tti1 _ _ = ()
+
+tti2 :: Proxy (AppendSymbol y "test") -> ()
+tti2 _ = ()
