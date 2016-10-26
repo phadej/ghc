@@ -35,7 +35,7 @@
 
   * Raw buffer operations in `GHC.IO.FD` are now strict in the buffer, offset, and length operations (#9696)
 
-  * Add `type family (m :: Symbol) <> (n :: Symbol) :: Symbol` to `GHC.TypeLits`
+  * Add `type family AppendSymbol (m :: Symbol) (n :: Symbol) :: Symbol` to `GHC.TypeLits`
     (#12162)
 
 ## 4.9.0.0  *May 2016*
