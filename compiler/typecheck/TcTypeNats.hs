@@ -12,7 +12,7 @@ module TcTypeNats
   , typeNatSubTyCon
   , typeNatCmpTyCon
   , typeSymbolCmpTyCon
-  , typeSymbolConcatTyCon
+  , typeSymbolAppendTyCon
   ) where
 
 import Type
@@ -34,7 +34,7 @@ import PrelNames  ( gHC_TYPELITS
                   , typeNatSubTyFamNameKey
                   , typeNatCmpTyFamNameKey
                   , typeSymbolCmpTyFamNameKey
-                  , typeSymbolConcatFamNameKey
+                  , typeSymbolAppendFamNameKey
                   )
 import FastString ( FastString
                   , fsLit, nilFS, nullFS, unpackFS, mkFastString, appendFS
@@ -56,7 +56,7 @@ typeNatTyCons =
   , typeNatSubTyCon
   , typeNatCmpTyCon
   , typeSymbolCmpTyCon
-  , typeSymbolConcatTyCon
+  , typeSymbolAppendTyCon
   ]
 
 typeNatAddTyCon :: TyCon
@@ -160,16 +160,16 @@ typeSymbolCmpTyCon =
     , sfInteractInert = \_ _ _ _ -> []
     }
 
-typeSymbolConcatTyCon :: TyCon
-typeSymbolConcatTyCon = mkTypeSymbolFunTyCon2 name
+typeSymbolAppendTyCon :: TyCon
+typeSymbolAppendTyCon = mkTypeSymbolFunTyCon2 name
   BuiltInSynFamily
-    { sfMatchFam      = matchFamConcatSymbol
-    , sfInteractTop   = interactTopConcatSymbol
-    , sfInteractInert = interactInertConcatSymbol
+    { sfMatchFam      = matchFamAppendSymbol
+    , sfInteractTop   = interactTopAppendSymbol
+    , sfInteractInert = interactInertAppendSymbol
     }
   where
   name = mkWiredInTyConName UserSyntax gHC_TYPELITS (fsLit "<>")
-                typeSymbolConcatFamNameKey typeSymbolConcatTyCon
+                typeSymbolAppendFamNameKey typeSymbolAppendTyCon
 
 
 
@@ -209,7 +209,7 @@ axAddDef
   , axLeqDef
   , axCmpNatDef
   , axCmpSymbolDef
-  , axConcatDef
+  , axAppendSymbolDef
   , axAdd0L
   , axAdd0R
   , axMul0L
@@ -225,8 +225,8 @@ axAddDef
   , axLeq0L
   , axSubDef
   , axSub0R
-  , axConcat0R
-  , axConcat0L
+  , axAppendSymbol0R
+  , axAppendSymbol0L
   :: CoAxiomRule
 
 axAddDef = mkBinAxiom "AddDef" typeNatAddTyCon $
@@ -255,7 +255,7 @@ axCmpSymbolDef =
            return (mkTyConApp typeSymbolCmpTyCon [s1,t1] ===
                    ordering (compare s2' t2')) }
 
-axConcatDef = CoAxiomRule
+axAppendSymbolDef = CoAxiomRule
     { coaxrName      = fsLit "ConcatDef"
     , coaxrAsmpRoles = [Nominal, Nominal]
     , coaxrRole      = Nominal
@@ -263,7 +263,7 @@ axConcatDef = CoAxiomRule
         do [Pair s1 s2, Pair t1 t2] <- return cs
            [s2', t2'] <- traverse isStrLitTy [s2, t2]
            let z = mkStrLitTy (appendFS s2' t2')
-           return (mkTyConApp typeSymbolConcatTyCon [s1, t1] === z)
+           return (mkTyConApp typeSymbolAppendTyCon [s1, t1] === z)
     }
 
 axSubDef = mkBinAxiom "SubDef" typeNatSubTyCon $
@@ -285,9 +285,9 @@ axCmpNatRefl    = mkAxiom1 "CmpNatRefl"
 axCmpSymbolRefl = mkAxiom1 "CmpSymbolRefl"
                 $ \(Pair s _) -> (cmpSymbol s s) === ordering EQ
 axLeq0L     = mkAxiom1 "Leq0L"    $ \(Pair s _) -> (num 0 <== s) === bool True
-axConcat0R  = mkAxiom1 "Concat0R"
+axAppendSymbol0R  = mkAxiom1 "Concat0R"
             $ \(Pair s t) -> (mkStrLitTy nilFS .<>. s) === t
-axConcat0L  = mkAxiom1 "Concat0L"
+axAppendSymbol0L  = mkAxiom1 "Concat0L"
             $ \(Pair s t) -> (s .<>. mkStrLitTy nilFS) === t
 
 typeNatCoAxiomRules :: Map.Map FastString CoAxiomRule
@@ -298,7 +298,7 @@ typeNatCoAxiomRules = Map.fromList $ map (\x -> (coaxrName x, x))
   , axLeqDef
   , axCmpNatDef
   , axCmpSymbolDef
-  , axConcatDef
+  , axAppendSymbolDef
   , axAdd0L
   , axAdd0R
   , axMul0L
@@ -313,8 +313,8 @@ typeNatCoAxiomRules = Map.fromList $ map (\x -> (coaxrName x, x))
   , axCmpSymbolRefl
   , axLeq0L
   , axSubDef
-  , axConcat0R
-  , axConcat0L
+  , axAppendSymbol0R
+  , axAppendSymbol0L
   ]
 
 
@@ -345,7 +345,7 @@ cmpSymbol :: Type -> Type -> Type
 cmpSymbol s t = mkTyConApp typeSymbolCmpTyCon [s,t]
 
 (.<>.) :: Type -> Type -> Type
-s .<>. t = mkTyConApp typeSymbolConcatTyCon [s, t]
+s .<>. t = mkTyConApp typeSymbolAppendTyCon [s, t]
 
 (===) :: Type -> Type -> Pair Type
 x === y = Pair x y
@@ -494,16 +494,16 @@ matchFamCmpSymbol [s,t]
         mbY = isStrLitTy t
 matchFamCmpSymbol _ = Nothing
 
-matchFamConcatSymbol :: [Type] -> Maybe (CoAxiomRule, [Type], Type)
-matchFamConcatSymbol [s,t]
-  | Just x <- mbX, nullFS x = Just (axConcat0R, [t], t)
-  | Just y <- mbY, nullFS y = Just (axConcat0L, [s], s)
+matchFamAppendSymbol :: [Type] -> Maybe (CoAxiomRule, [Type], Type)
+matchFamAppendSymbol [s,t]
+  | Just x <- mbX, nullFS x = Just (axAppendSymbol0R, [t], t)
+  | Just y <- mbY, nullFS y = Just (axAppendSymbol0L, [s], s)
   | Just x <- mbX, Just y <- mbY =
-    Just (axConcatDef, [s,t], mkStrLitTy (appendFS x y))
+    Just (axAppendSymbolDef, [s,t], mkStrLitTy (appendFS x y))
   where
   mbX = isStrLitTy s
   mbY = isStrLitTy t
-matchFamConcatSymbol _ = Nothing
+matchFamAppendSymbol _ = Nothing
 
 {-------------------------------------------------------------------------------
 Interact with axioms
@@ -602,8 +602,8 @@ interactTopCmpSymbol [s,t] r
   | Just EQ <- isOrderingLitTy r = [ s === t ]
 interactTopCmpSymbol _ _ = []
 
-interactTopConcatSymbol :: [Xi] -> Xi -> [Pair Type]
-interactTopConcatSymbol [s,t] r
+interactTopAppendSymbol :: [Xi] -> Xi -> [Pair Type]
+interactTopAppendSymbol [s,t] r
   -- (a <> b ~ "") => (a ~ "", b ~ "")
   | Just z <- mbZ, nullFS z =
     [s === mkStrLitTy nilFS, t === mkStrLitTy nilFS ]
@@ -621,7 +621,7 @@ interactTopConcatSymbol [s,t] r
   mbY = isStrLitTy t
   mbZ = isStrLitTy r
 
-interactTopConcatSymbol _ _ = []
+interactTopAppendSymbol _ _ = []
 
 {-------------------------------------------------------------------------------
 Interaction with inerts
@@ -670,12 +670,12 @@ interactInertLeq [x1,y1] z1 [x2,y2] z2
 interactInertLeq _ _ _ _ = []
 
 
-interactInertConcatSymbol :: [Xi] -> Xi -> [Xi] -> Xi -> [Pair Type]
-interactInertConcatSymbol [x1,y1] z1 [x2,y2] z2
+interactInertAppendSymbol :: [Xi] -> Xi -> [Xi] -> Xi -> [Pair Type]
+interactInertAppendSymbol [x1,y1] z1 [x2,y2] z2
   | sameZ && tcEqType x1 x2         = [ y1 === y2 ]
   | sameZ && tcEqType y1 y2         = [ x1 === x2 ]
   where sameZ = tcEqType z1 z2
-interactInertConcatSymbol _ _ _ _ = []
+interactInertAppendSymbol _ _ _ _ = []
 
 
 
