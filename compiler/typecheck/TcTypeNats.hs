@@ -168,7 +168,7 @@ typeSymbolAppendTyCon = mkTypeSymbolFunTyCon2 name
     , sfInteractInert = interactInertAppendSymbol
     }
   where
-  name = mkWiredInTyConName UserSyntax gHC_TYPELITS (fsLit "<>")
+  name = mkWiredInTyConName UserSyntax gHC_TYPELITS (fsLit "AppendSymbol")
                 typeSymbolAppendFamNameKey typeSymbolAppendTyCon
 
 
@@ -256,7 +256,7 @@ axCmpSymbolDef =
                    ordering (compare s2' t2')) }
 
 axAppendSymbolDef = CoAxiomRule
-    { coaxrName      = fsLit "ConcatDef"
+    { coaxrName      = fsLit "AppendSymbolDef"
     , coaxrAsmpRoles = [Nominal, Nominal]
     , coaxrRole      = Nominal
     , coaxrProves    = \cs ->
@@ -286,9 +286,9 @@ axCmpSymbolRefl = mkAxiom1 "CmpSymbolRefl"
                 $ \(Pair s _) -> (cmpSymbol s s) === ordering EQ
 axLeq0L     = mkAxiom1 "Leq0L"    $ \(Pair s _) -> (num 0 <== s) === bool True
 axAppendSymbol0R  = mkAxiom1 "Concat0R"
-            $ \(Pair s t) -> (mkStrLitTy nilFS .<>. s) === t
+            $ \(Pair s t) -> (mkStrLitTy nilFS `appendSymbol` s) === t
 axAppendSymbol0L  = mkAxiom1 "Concat0L"
-            $ \(Pair s t) -> (s .<>. mkStrLitTy nilFS) === t
+            $ \(Pair s t) -> (s `appendSymbol` mkStrLitTy nilFS) === t
 
 typeNatCoAxiomRules :: Map.Map FastString CoAxiomRule
 typeNatCoAxiomRules = Map.fromList $ map (\x -> (coaxrName x, x))
@@ -344,8 +344,8 @@ cmpNat s t = mkTyConApp typeNatCmpTyCon [s,t]
 cmpSymbol :: Type -> Type -> Type
 cmpSymbol s t = mkTyConApp typeSymbolCmpTyCon [s,t]
 
-(.<>.) :: Type -> Type -> Type
-s .<>. t = mkTyConApp typeSymbolAppendTyCon [s, t]
+appendSymbol :: Type -> Type -> Type
+appendSymbol s t = mkTyConApp typeSymbolAppendTyCon [s, t]
 
 (===) :: Type -> Type -> Pair Type
 x === y = Pair x y
@@ -604,15 +604,15 @@ interactTopCmpSymbol _ _ = []
 
 interactTopAppendSymbol :: [Xi] -> Xi -> [Pair Type]
 interactTopAppendSymbol [s,t] r
-  -- (a <> b ~ "") => (a ~ "", b ~ "")
+  -- (AppendSymbol a b ~ "") => (a ~ "", b ~ "")
   | Just z <- mbZ, nullFS z =
     [s === mkStrLitTy nilFS, t === mkStrLitTy nilFS ]
 
-  -- ("foo" <> b ~ "foobar") => (b ~ "bar")
+  -- (AppendSymbol "foo" b ~ "foobar") => (b ~ "bar")
   | Just x <- fmap unpackFS mbX, Just z <- fmap unpackFS mbZ, x `isPrefixOf` z =
     [ t === mkStrLitTy (mkFastString $ drop (length x) z) ]
 
-  -- (f <> "bar" ~ "foobar") => (f ~ "foo")
+  -- (AppendSymbol f "bar" ~ "foobar") => (f ~ "foo")
   | Just y <- fmap unpackFS mbY, Just z <- fmap unpackFS mbZ, y `isSuffixOf` z =
     [ t === mkStrLitTy (mkFastString $ take (length z - length y) z) ]
 

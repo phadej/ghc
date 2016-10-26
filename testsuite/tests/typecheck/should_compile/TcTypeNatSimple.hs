@@ -59,13 +59,13 @@ e17 = id
 e18 :: Proxy (a - 0) -> Proxy a
 e18 = id
 
-te1 :: Proxy ("" <> x) -> Proxy x
+te1 :: Proxy (AppendSymbol "" x) -> Proxy x
 te1 = id
 
-te2 :: Proxy (x <> "") -> Proxy x
+te2 :: Proxy (AppendSymbol x "") -> Proxy x
 te2 = id
 
-te3 :: Proxy ("type" <> "level") -> Proxy "typelevel"
+te3 :: Proxy (AppendSymbol "type" "level") -> Proxy "typelevel"
 te3 = id
 
 --------------------------------------------------------------------------------

@@ -26,7 +26,7 @@
   * Add `Semigroup` instance for `IO`, as well as for `Event` and `Lifetime`
     from `GHC.Event` (#12464)
 
-  * Add `type family (m :: Symbol) <> (n :: Symbol) :: Symbol` to `GHC.TypeLits`
+  * Add `type family AppendSymbol (m :: Symbol) (n :: Symbol) :: Symbol` to `GHC.TypeLits`
     (#12162)
 
 ## 4.9.0.0  *May 2016*
