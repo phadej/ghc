@@ -27,12 +27,6 @@ tlog _ _ = Proxy
 tleq :: ((x <=? y) ~ True) => Proxy y -> Proxy x
 tleq _ = Proxy
 
-tappend :: Proxy (AppendSymbol x y) -> Proxy x -> Proxy y
-tappend _ _ = Proxy
-
-tappend2 :: Proxy (AppendSymbol x y) -> (Proxy x, Proxy y)
-tappend2 _ = (Proxy, Proxy)
-
 main :: IO ()
 main = print [ sh (tsub  (Proxy :: Proxy 5) (Proxy :: Proxy 3)) == "2"
              , let (p, q) = tsub2 (Proxy :: Proxy 0)
@@ -43,12 +37,6 @@ main = print [ sh (tsub  (Proxy :: Proxy 5) (Proxy :: Proxy 3)) == "2"
              , sh (troot (Proxy :: Proxy 9) (Proxy :: Proxy 2)) == "3"
              , sh (tlog  (Proxy :: Proxy 8) (Proxy :: Proxy 2)) == "3"
              , sh (tleq  (Proxy :: Proxy 0))                    == "0"
-             , symbolVal (tappend (Proxy :: Proxy "abc") (Proxy :: Proxy "ab"))
-               == "c"
-             , let (p, q) = tappend2 (Proxy :: Proxy "")
-               in (symbolVal p, symbolVal q) == ("", "")
              ]
   where
   sh x = show (natVal x)
-
-
