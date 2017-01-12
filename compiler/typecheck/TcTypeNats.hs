@@ -251,7 +251,8 @@ axCmpSymbolDef =
     , coaxrRole      = Nominal
     , coaxrProves    = \cs ->
         do [Pair s1 s2, Pair t1 t2] <- return cs
-           [s2', t2'] <- traverse isStrLitTy [s2, t2]
+           s2' <- isStrLitTy s2
+           t2' <- isStrLitTy t2
            return (mkTyConApp typeSymbolCmpTyCon [s1,t1] ===
                    ordering (compare s2' t2')) }
 
@@ -261,7 +262,8 @@ axAppendSymbolDef = CoAxiomRule
     , coaxrRole      = Nominal
     , coaxrProves    = \cs ->
         do [Pair s1 s2, Pair t1 t2] <- return cs
-           [s2', t2'] <- traverse isStrLitTy [s2, t2]
+           s2' <- isStrLitTy s2
+           t2' <- isStrLitTy t2
            let z = mkStrLitTy (appendFS s2' t2')
            return (mkTyConApp typeSymbolAppendTyCon [s1, t1] === z)
     }
@@ -402,8 +404,9 @@ mkBinAxiom str tc f =
     , coaxrRole      = Nominal
     , coaxrProves    = \cs ->
         do [Pair s1 s2, Pair t1 t2] <- return cs
-           [s2', t2'] <- traverse isNumLitTy [s2, t2]
-           z          <- f s2' t2'
+           s2' <- isNumLitTy s2
+           t2' <- isNumLitTy t2
+           z   <- f s2' t2'
            return (mkTyConApp tc [s1,t1] === z)
     }
 
