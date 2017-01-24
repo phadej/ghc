@@ -26,7 +26,7 @@ module GHC.TypeLits
     Nat, Symbol  -- Both declared in GHC.Types in package ghc-prim
 
     -- * Linking type and value level
-  , KnownNat, natVal, natVal'
+  , N.KnownNat, natVal, natVal'
   , KnownSymbol, symbolVal, symbolVal'
   , SomeNat(..), SomeSymbol(..)
   , someNatVal, someSymbolVal
@@ -50,20 +50,17 @@ import GHC.Num(Integer)
 import GHC.Base(String)
 import GHC.Show(Show(..))
 import GHC.Read(Read(..))
+import GHC.Real(toInteger)
 import GHC.Prim(magicDict, Proxy#)
 import Data.Maybe(Maybe(..))
 import Data.Proxy (Proxy(..))
 import Data.Type.Equality(type (==), (:~:)(Refl))
 import Unsafe.Coerce(unsafeCoerce)
 
---------------------------------------------------------------------------------
+import GHC.TypeNats (KnownNat)
+import qualified GHC.TypeNats as N
 
--- | This class gives the integer associated with a type-level natural.
--- There are instances of the class for every concrete literal: 0, 1, 2, etc.
---
--- @since 4.7.0.0
-class KnownNat (n :: Nat) where
-  natSing :: SNat n
+--------------------------------------------------------------------------------
 
 -- | This class gives the string associated with a type-level symbol.
 -- There are instances of the class for every concrete literal: "hello", etc.
@@ -74,8 +71,7 @@ class KnownSymbol (n :: Symbol) where
 
 -- | @since 4.7.0.0
 natVal :: forall n proxy. KnownNat n => proxy n -> Integer
-natVal _ = case natSing :: SNat n of
-             SNat x -> x
+natVal p = toInteger (N.natVal p)
 
 -- | @since 4.7.0.0
 symbolVal :: forall n proxy. KnownSymbol n => proxy n -> String
@@ -84,8 +80,7 @@ symbolVal _ = case symbolSing :: SSymbol n of
 
 -- | @since 4.8.0.0
 natVal' :: forall n. KnownNat n => Proxy# n -> Integer
-natVal' _ = case natSing :: SNat n of
-             SNat x -> x
+natVal' p = toInteger (N.natVal' p)
 
 -- | @since 4.8.0.0
 symbolVal' :: forall n. KnownSymbol n => Proxy# n -> String
@@ -153,11 +148,6 @@ instance Show SomeSymbol where
 -- | @since 4.7.0.0
 instance Read SomeSymbol where
   readsPrec p xs = [ (someSymbolVal a, ys) | (a,ys) <- readsPrec p xs ]
-
-type family EqNat (a :: Nat) (b :: Nat) where
-  EqNat a a = 'True
-  EqNat a b = 'False
-type instance a == b = EqNat a b
 
 type family EqSymbol (a :: Symbol) (b :: Symbol) where
   EqSymbol a a = 'True

@@ -88,6 +88,7 @@ import StaticFlags
 import Outputable
 import FastString
 import Maybes( isJust )
+import GHC.Natural (Natural)
 
 import Data.Data hiding ( Fixity, Prefix, Infix )
 import Data.Maybe ( fromMaybe )
@@ -590,7 +591,7 @@ deriving instance (DataId name) => Data (HsType name)
 -- the following
 -- | Haskell Type Literal
 data HsTyLit
-  = HsNumTy SourceText Integer
+  = HsNumTy SourceText Natural
   | HsStrTy SourceText FastString
     deriving Data
 
@@ -1345,5 +1346,5 @@ ppr_app_ty ctxt (HsAppPrefix ty)                      = ppr_mono_lty ctxt ty
 
 --------------------------
 ppr_tylit :: HsTyLit -> SDoc
-ppr_tylit (HsNumTy _ i) = integer i
+ppr_tylit (HsNumTy _ i) = integer (toInteger i)
 ppr_tylit (HsStrTy _ s) = text (show s)

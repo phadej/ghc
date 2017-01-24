@@ -229,6 +229,7 @@ import Unique ( nonDetCmpUnique )
 import SrcLoc  ( SrcSpan )
 import OccName ( OccName )
 import Name    ( mkInternalName )
+import GHC.Natural (Natural)
 
 import Maybes           ( orElse )
 import Data.Maybe       ( isJust, mapMaybe )
@@ -725,11 +726,11 @@ repSplitAppTys ty = split ty []
                       ~~~~~
 -}
 
-mkNumLitTy :: Integer -> Type
+mkNumLitTy :: Natural -> Type
 mkNumLitTy n = LitTy (NumTyLit n)
 
 -- | Is this a numeric literal. We also look through type synonyms.
-isNumLitTy :: Type -> Maybe Integer
+isNumLitTy :: Type -> Maybe Natural
 isNumLitTy ty | Just ty1 <- coreView ty = isNumLitTy ty1
 isNumLitTy (LitTy (NumTyLit n)) = Just n
 isNumLitTy _                    = Nothing

@@ -158,6 +158,7 @@ import FV
 
 -- others
 import BasicTypes ( LeftOrRight(..), TyPrec(..), maybeParen, pickLR )
+import GHC.Natural (Natural)
 import PrelNames
 import Outputable
 import DynFlags
@@ -304,7 +305,7 @@ data Type
 -- NOTE:  Other parts of the code assume that type literals do not contain
 -- types or type variables.
 data TyLit
-  = NumTyLit Integer
+  = NumTyLit Natural
   | StrTyLit FastString
   deriving (Eq, Ord, Data.Data)
 

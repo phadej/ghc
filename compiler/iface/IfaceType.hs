@@ -62,10 +62,12 @@ import BasicTypes
 import Binary
 import Outputable
 import FastString
+import GHC.Natural (Natural)
 import FastStringEnv
 import UniqFM
 import Util
 
+import Control.Monad (when)
 import Data.List (foldl')
 
 {-
@@ -132,7 +134,7 @@ type IfacePredType = IfaceType
 type IfaceContext = [IfacePredType]
 
 data IfaceTyLit
-  = IfaceNumTyLit Integer
+  = IfaceNumTyLit Natural
   | IfaceStrTyLit FastString
   deriving (Eq)
 
@@ -1096,7 +1098,7 @@ pprTuple sort promoted args
     tupleParens sort (pprWithCommas pprIfaceType args')
 
 pprIfaceTyLit :: IfaceTyLit -> SDoc
-pprIfaceTyLit (IfaceNumTyLit n) = integer n
+pprIfaceTyLit (IfaceNumTyLit n) = integer (toInteger n)
 pprIfaceTyLit (IfaceStrTyLit n) = text (show n)
 
 pprIfaceCoercion, pprParendIfaceCoercion :: IfaceCoercion -> SDoc
@@ -1238,14 +1240,15 @@ instance Outputable IfaceTyLit where
   ppr = pprIfaceTyLit
 
 instance Binary IfaceTyLit where
-  put_ bh (IfaceNumTyLit n)  = putByte bh 1 >> put_ bh n
+  put_ bh (IfaceNumTyLit n)  = putByte bh 1 >> put_ bh (toInteger n)
   put_ bh (IfaceStrTyLit n)  = putByte bh 2 >> put_ bh n
 
   get bh =
     do tag <- getByte bh
        case tag of
          1 -> do { n <- get bh
-                 ; return (IfaceNumTyLit n) }
+                 ; when (n < 0) $ panic "get IFaceTyLit negative natural"
+                 ; return (IfaceNumTyLit (fromInteger n)) }
          2 -> do { n <- get bh
                  ; return (IfaceStrTyLit n) }
          _ -> panic ("get IfaceTyLit " ++ show tag)

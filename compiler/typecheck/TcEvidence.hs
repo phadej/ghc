@@ -53,6 +53,7 @@ import VarEnv
 import VarSet
 import Name
 import Pair
+import GHC.Natural (Natural)
 
 import Util
 import Bag
@@ -504,7 +505,7 @@ data EvTypeable
   deriving Data.Data
 
 data EvLit
-  = EvNum Integer
+  = EvNum Natural
   | EvStr FastString
     deriving Data.Data
 
@@ -578,12 +579,12 @@ Note [KnownNat & KnownSymbol and EvLit]
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 A part of the type-level literals implementation are the classes
 "KnownNat" and "KnownSymbol", which provide a "smart" constructor for
-defining singleton values.  Here is the key stuff from GHC.TypeLits
+defining singleton values.  Here is the key stuff from GHC.TypeNats / GHC.TypeLits
 
   class KnownNat (n :: Nat) where
     natSing :: SNat n
 
-  newtype SNat (n :: Nat) = SNat Integer
+  newtype SNat (n :: Nat) = SNat Natural
 
 Conceptually, this class has infinitely many instances:
 
@@ -891,7 +892,7 @@ instance Outputable EvTerm where
   ppr (EvTypeable ty ev)      = ppr ev <+> dcolon <+> text "Typeable" <+> ppr ty
 
 instance Outputable EvLit where
-  ppr (EvNum n) = integer n
+  ppr (EvNum n) = integer (toInteger n)
   ppr (EvStr s) = text (show s)
 
 instance Outputable EvCallStack where

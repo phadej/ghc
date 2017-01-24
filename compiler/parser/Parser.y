@@ -1895,7 +1895,7 @@ atype :: { LHsType RdrName }
                                                      placeHolderKind ($2 : $4))
                                                  [mos $1,mcs $5] }
         | INTEGER              { sLL $1 $> $ HsTyLit $ HsNumTy (getINTEGERs $1)
-                                                               (getINTEGER $1) }
+                                                               (fromInteger (getINTEGER $1)) }
         | STRING               { sLL $1 $> $ HsTyLit $ HsStrTy (getSTRINGs $1)
                                                                (getSTRING  $1) }
         | '_'                  { sL1 $1 $ mkAnonWildCardTy }
