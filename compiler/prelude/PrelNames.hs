@@ -1131,7 +1131,7 @@ bitIntegerName        = varQual gHC_INTEGER_TYPE (fsLit "bitInteger")        bit
 
 -- GHC.Natural types
 naturalTyConName :: Name
-naturalTyConName     = tcQual gHC_NATURAL (fsLit "NAtural") naturalTyConKey
+naturalTyConName     = tcQual gHC_NATURAL (fsLit "Natural") naturalTyConKey
 
 -- GHC.Real types and classes
 rationalTyConName, ratioTyConName, ratioDataConName, realClassName,
