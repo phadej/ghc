@@ -1930,7 +1930,7 @@ data FamilyResultSig = NoSig              -- ^ no signature
 data InjectivityAnn = InjectivityAnn Name [Name]
   deriving ( Show, Eq, Ord, Data, Generic )
 
-data TyLit = NumTyLit Integer             -- ^ @2@
+data TyLit = NumTyLit Natural             -- ^ @2@
            | StrTyLit String              -- ^ @"Hello"@
   deriving ( Show, Eq, Ord, Data, Generic )
 

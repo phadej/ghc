@@ -742,7 +742,7 @@ split t = go t []
           go ty           args = (ty, args)
 
 pprTyLit :: TyLit -> Doc
-pprTyLit (NumTyLit n) = integer n
+pprTyLit (NumTyLit n) = integer (toInteger n)
 pprTyLit (StrTyLit s) = text (show s)
 
 instance Ppr TyLit where

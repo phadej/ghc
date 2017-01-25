@@ -1041,7 +1041,7 @@ repTy (HsWildCardTy (AnonWildCard _)) = repTWildCard
 repTy ty                      = notHandled "Exotic form of type" (ppr ty)
 
 repTyLit :: HsTyLit -> DsM (Core TH.TyLitQ)
-repTyLit (HsNumTy _ i) = do iExpr <- mkIntegerExpr i
+repTyLit (HsNumTy _ n) = do iExpr <- mkNaturalExpr n
                             rep2 numTyLitName [iExpr]
 repTyLit (HsStrTy _ s) = do { s' <- mkStringExprFS s
                             ; rep2 strTyLitName [s']

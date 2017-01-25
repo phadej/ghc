@@ -12,7 +12,7 @@ module MkCore (
         -- * Constructing boxed literals
         mkWordExpr, mkWordExprWord,
         mkIntExpr, mkIntExprInt,
-        mkIntegerExpr,
+        mkIntegerExpr, mkNaturalExpr,
         mkFloatExpr, mkDoubleExpr,
         mkCharExpr, mkStringExpr, mkStringExprFS, mkStringExprFSWith,
 
@@ -74,6 +74,7 @@ import Demand
 import Name      hiding ( varName )
 import Outputable
 import FastString
+import GHC.Natural      ( Natural )
 import UniqSupply
 import BasicTypes
 import Util
@@ -248,6 +249,12 @@ mkWordExprWord dflags w = mkCoreConApps wordDataCon [mkWordLitWord dflags w]
 mkIntegerExpr  :: MonadThings m => Integer -> m CoreExpr  -- Result :: Integer
 mkIntegerExpr i = do t <- lookupTyCon integerTyConName
                      return (Lit (mkLitInteger i (mkTyConTy t)))
+
+-- | Create a 'CoreExpr' which will evaluate to the given @Natural@
+mkNaturalExpr  :: MonadThings m => Natural -> m CoreExpr  -- Result :: Natural
+mkNaturalExpr i = do t <- lookupTyCon integerTyConName
+                     return (Lit (mkLitInteger (toInteger i) (mkTyConTy t)))
+
 
 -- | Create a 'CoreExpr' which will evaluate to the given @Float@
 mkFloatExpr :: Float -> CoreExpr

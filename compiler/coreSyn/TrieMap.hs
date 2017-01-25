@@ -32,6 +32,7 @@ import Var
 import UniqDFM
 import Unique( Unique )
 import FastString(FastString)
+import GHC.Natural (Natural)
 
 import qualified Data.Map    as Map
 import qualified Data.IntMap as IntMap
@@ -907,7 +908,7 @@ fdT k m = foldTM k (tm_var m)
         . foldMaybe k (tm_coerce m)
 
 ------------------------
-data TyLitMap a = TLM { tlm_number :: Map.Map Integer a
+data TyLitMap a = TLM { tlm_number :: Map.Map Natural a
                       , tlm_string :: Map.Map FastString a
                       }
 

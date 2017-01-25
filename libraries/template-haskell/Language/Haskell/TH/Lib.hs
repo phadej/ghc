@@ -113,6 +113,7 @@ module Language.Haskell.TH.Lib (
 
 import Language.Haskell.TH.Syntax hiding (Role, InjectivityAnn)
 import qualified Language.Haskell.TH.Syntax as TH
+import Numeric.Natural ( Natural )
 import Control.Monad( liftM, liftM2 )
 import Data.Word( Word8 )
 
@@ -845,9 +846,8 @@ varStrictType = varBangType
 
 -- * Type Literals
 
-numTyLit :: Integer -> TyLitQ
-numTyLit n = if n >= 0 then return (NumTyLit n)
-                       else fail ("Negative type-level number: " ++ show n)
+numTyLit :: Natural -> TyLitQ
+numTyLit n = return (NumTyLit n)
 
 strTyLit :: String -> TyLitQ
 strTyLit s = return (StrTyLit s)

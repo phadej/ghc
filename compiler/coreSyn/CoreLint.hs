@@ -1181,10 +1181,7 @@ lint_co_app ty k tys
 
 ----------------
 lintTyLit :: TyLit -> LintM ()
-lintTyLit (NumTyLit n)
-  | n >= 0    = return ()
-  | otherwise = failWithL msg
-    where msg = text "Negative type literal:" <+> integer n
+lintTyLit (NumTyLit _) = return ()
 lintTyLit (StrTyLit _) = return ()
 
 lint_app :: SDoc -> LintedKind -> [(LintedType,LintedKind)] -> LintM Kind
