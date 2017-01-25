@@ -40,7 +40,6 @@ module GHC.TypeNats
 import GHC.Base(Eq(..), Ord(..), Bool(True,False), Ordering(..), otherwise)
 import GHC.Types( Nat )
 import GHC.Natural(Natural)
-import GHC.Base(String)
 import GHC.Show(Show(..))
 import GHC.Read(Read(..))
 import GHC.Prim(magicDict, Proxy#)
