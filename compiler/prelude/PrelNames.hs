@@ -332,6 +332,7 @@ basicKnownKeyNames
 
         -- Natural
         naturalTyConName,
+        naturalFromInteger,
 
         -- Float/Double
         rationalToFloatName,
@@ -1135,6 +1136,9 @@ bitIntegerName        = varQual gHC_INTEGER_TYPE (fsLit "bitInteger")        bit
 -- GHC.Natural types
 naturalTyConName :: Name
 naturalTyConName     = tcQual gHC_NATURAL (fsLit "Natural") naturalTyConKey
+
+naturalFromIntegerName :: Name
+naturalFromIntegerName = varQual gHC_NATURAL (fsLit "naturalFromInteger") naturalFromIntegerIdKey
 
 -- GHC.Real types and classes
 rationalTyConName, ratioTyConName, ratioDataConName, realClassName,
@@ -2196,6 +2200,10 @@ toListClassOpKey = mkPreludeMiscIdUnique 501
 
 proxyHashKey :: Unique
 proxyHashKey = mkPreludeMiscIdUnique 502
+
+-- Natural
+naturalFromIntegerIdKey :: Unique
+naturalFromIntegerIdKey = 503
 
 ---------------- Template Haskell -------------------
 --      THNames.hs: USES IdUniques 200-499

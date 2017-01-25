@@ -36,6 +36,7 @@ module GHC.Natural
       Natural(..)
     , isValidNatural
       -- * Conversions
+    , naturalFromInteger
     , wordToNatural
     , naturalToWordMaybe
       -- * Checked subtraction
@@ -162,9 +163,7 @@ instance Read Natural where
 
 -- | @since 4.8.0.0
 instance Num Natural where
-    fromInteger (S# i#) | I# i# >= 0  = NatS# (int2Word# i#)
-    fromInteger (Jp# bn)              = bigNatToNatural bn
-    fromInteger _                     = raise# underflowException
+    fromInteger          = naturalFromInteger
 
     (+) = plusNatural
     (*) = timesNatural
@@ -177,6 +176,12 @@ instance Num Natural where
 
     negate (NatS# 0##)   = NatS# 0##
     negate _             = raise# underflowException
+
+-- | @since 4.10.0.0
+naturalFromInteger :: Integer -> Natural
+naturalFrominteger (S# i#) | I# i# >= 0  = NatS# (int2Word# i#)
+naturalFromInteger (Jp# bn)              = bigNatToNatural bn
+naturalFromInteger _                     = raise# underflowException
 
 -- | @since 4.8.0.0
 instance Real Natural where

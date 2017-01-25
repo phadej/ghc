@@ -30,7 +30,7 @@ module GHC.TypeLits
   , KnownSymbol, symbolVal, symbolVal'
   , N.SomeNat(..), SomeSymbol(..)
   , someNatVal, someSymbolVal
-  , anameNat, sameSymbol
+  , N.sameNat, sameSymbol
 
 
     -- * Functions on type literals
