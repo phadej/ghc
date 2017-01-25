@@ -332,7 +332,7 @@ basicKnownKeyNames
 
         -- Natural
         naturalTyConName,
-        naturalFromInteger,
+        naturalFromIntegerName,
 
         -- Float/Double
         rationalToFloatName,
@@ -444,7 +444,7 @@ pRELUDE         = mkBaseModule_ pRELUDE_NAME
 
 gHC_PRIM, gHC_TYPES, gHC_GENERICS, gHC_MAGIC,
     gHC_CLASSES, gHC_BASE, gHC_ENUM, gHC_GHCI, gHC_CSTRING,
-    gHC_SHOW, gHC_READ, gHC_NUM, gHC_INTEGER_TYPE, gHC_LIST,
+    gHC_SHOW, gHC_READ, gHC_NUM, gHC_INTEGER_TYPE, gHC_NATURAL, gHC_LIST,
     gHC_TUPLE, dATA_TUPLE, dATA_EITHER, dATA_STRING,
     dATA_FOLDABLE, dATA_TRAVERSABLE, dATA_MONOID, dATA_SEMIGROUP,
     gHC_CONC, gHC_IO, gHC_IO_Exception,
@@ -1566,7 +1566,8 @@ addrPrimTyConKey, arrayPrimTyConKey, arrayArrayPrimTyConKey, boolTyConKey,
     doubleTyConKey, floatPrimTyConKey, floatTyConKey, funTyConKey,
     intPrimTyConKey, intTyConKey, int8TyConKey, int16TyConKey,
     int32PrimTyConKey, int32TyConKey, int64PrimTyConKey, int64TyConKey,
-    integerTyConKey, listTyConKey, foreignObjPrimTyConKey, maybeTyConKey,
+    integerTyConKey, naturalTyConKey,
+    listTyConKey, foreignObjPrimTyConKey, maybeTyConKey,
     weakPrimTyConKey, mutableArrayPrimTyConKey, mutableArrayArrayPrimTyConKey,
     mutableByteArrayPrimTyConKey, orderingTyConKey, mVarPrimTyConKey,
     ratioTyConKey, rationalTyConKey, realWorldTyConKey, stablePtrPrimTyConKey,
@@ -2203,7 +2204,7 @@ proxyHashKey = mkPreludeMiscIdUnique 502
 
 -- Natural
 naturalFromIntegerIdKey :: Unique
-naturalFromIntegerIdKey = 503
+naturalFromIntegerIdKey = mkPreludeMiscIdUnique 503
 
 ---------------- Template Haskell -------------------
 --      THNames.hs: USES IdUniques 200-499

@@ -251,6 +251,8 @@ mkIntegerExpr i = do t <- lookupTyCon integerTyConName
                      return (Lit (mkLitInteger i (mkTyConTy t)))
 
 -- | Create a 'CoreExpr' which will evaluate to the given @Natural@
+--
+-- TODO: should we add LitNatural to Core?
 mkNaturalExpr  :: MonadThings m => Natural -> m CoreExpr  -- Result :: Natural
 mkNaturalExpr i = do nType <- lookupTyCon naturalTyConName
                      iExpr <- mkIntegerExpr (toInteger i)
