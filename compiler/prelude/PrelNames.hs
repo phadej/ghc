@@ -330,6 +330,9 @@ basicKnownKeyNames
         andIntegerName, orIntegerName, xorIntegerName, complementIntegerName,
         shiftLIntegerName, shiftRIntegerName, bitIntegerName,
 
+        -- Natural
+        naturalTyConName,
+
         -- Float/Double
         rationalToFloatName,
         rationalToDoubleName,
