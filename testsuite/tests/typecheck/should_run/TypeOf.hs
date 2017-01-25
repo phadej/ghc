@@ -8,6 +8,7 @@ import GHC.Types
 
 main :: IO ()
 main = do
+{-
   print $ typeOf "hello world"
   print $ typeOf '4'
   print $ typeOf (42 :: Int)
@@ -23,7 +24,9 @@ main = do
   print $ typeOf (Proxy :: Proxy (Eq Int))
   print $ typeOf (Proxy :: Proxy (Int, Int))
   print $ typeOf (Proxy :: Proxy "hello world")
+  -}
   print $ typeOf (Proxy :: Proxy 1)
+  {-
   print $ typeOf (Proxy :: Proxy [1,2,3])
   print $ typeOf (Proxy :: Proxy 'EQ)
   print $ typeOf (Proxy :: Proxy TYPE)
@@ -33,3 +36,4 @@ main = do
   print $ typeOf (Proxy :: Proxy 'LiftedRep)
   print $ typeOf (Proxy :: Proxy '(1, "hello"))
   print $ typeOf (Proxy :: Proxy (~~))
+  -}

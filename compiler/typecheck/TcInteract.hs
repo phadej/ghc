@@ -2119,7 +2119,7 @@ makeLitDict :: Class -> Type -> EvLit -> TcS LookupInstResult
 -- of the appropriate type.  See Note [KnownNat & KnownSymbol and EvLit]
 -- in TcEvidence.  The coercion happens in 2 steps:
 --
---     Integer -> SNat n     -- representation of literal to singleton
+--     Natural -> SNat n     -- representation of literal to singleton
 --     SNat n  -> KnownNat n -- singleton to dictionary
 --
 --     The process is mirrored for Symbols:
@@ -2134,7 +2134,7 @@ makeLitDict clas ty evLit
                       $ dropForAlls         -- KnownNat n => SNat n
                       $ idType meth         -- forall n. KnownNat n => SNat n
     , Just (_, co_rep) <- tcInstNewTyCon_maybe tcRep [ty]
-          -- SNat n ~ Integer
+          -- SNat n ~ Natural
     , let ev_tm = mkEvCast (EvLit evLit) (mkTcSymCo (mkTcTransCo co_dict co_rep))
     = return $ GenInst { lir_new_theta = []
                        , lir_mk_ev     = \_ -> ev_tm
