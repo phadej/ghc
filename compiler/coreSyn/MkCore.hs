@@ -252,7 +252,7 @@ mkIntegerExpr i = do t <- lookupTyCon integerTyConName
 
 -- | Create a 'CoreExpr' which will evaluate to the given @Natural@
 mkNaturalExpr  :: MonadThings m => Natural -> m CoreExpr  -- Result :: Natural
-mkNaturalExpr i = do t <- lookupTyCon integerTyConName
+mkNaturalExpr i = do t <- lookupTyCon naturalTyConName
                      return (Lit (mkLitInteger (toInteger i) (mkTyConTy t)))
 
 
